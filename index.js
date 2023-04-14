@@ -1,18 +1,23 @@
-const ghImage = document.querySelector("#gh-image");
-const ghName = document.querySelector("#gh-name");
-const ghBio = document.querySelector("#gh-bio");
-const ghLocation = document.querySelector("#gh-location");
-const ghSite = document.querySelector("#gh-sites");
-const ghURL = document.querySelector("#gh-url");
-const ghTwiter = document.querySelector("#gh-twiter");
+const obj  = {
+    ghImage: document.querySelector("#gh-image"),
+    ghName: document.querySelector("#gh-name"),
+    ghName1: document.querySelector("#gh-name1"),
+    ghBio: document.querySelector("#gh-bio"),
+    ghLocation: document.querySelector("#gh-location"),
+    ghCompany: document.querySelector("#gh-company"),
+    ghURL: document.querySelector("#gh-url"),
+    ghTwiter: document.querySelector("#gh-twiter"),
+    ghRepository: document.querySelector("#gh-repository"),
+    ghFollowers: document.querySelector("#gh-followers"),
+    ghFollowing: document.querySelector("#gh-following"),
+    ghAction: document.querySelector("#gh-action"),
+    ghInput: document.querySelector("#gh-input")
+}
 
-const ghAction = document.querySelector("#gh-action")
-const ghInput = document.querySelector("#gh-input");
 
-
-ghAction.onclick = async () => {
-    const username = ghInput.value;
-    ghInput.value = "";
+obj.ghAction.onclick = async () => {
+    const username = obj.ghInput.value;
+    obj.ghInput.value = "";
     if (username === "") {
         Swal.fire({
             title: "Error",
@@ -21,40 +26,34 @@ ghAction.onclick = async () => {
         })
         return;
     }
-
-    const dato = await obtenerDatosGItHub(username);
-
-    if (dato.name === undefined) {
-        Swal.fire({
-            title: "Error",
-            text: "El usuario no existe",
-            icon: "error"
-        })
-        return;
-    }
-
-    Swal.fire({
-        title: "Exito",
-        text: "Datos encontrados",
-        icon: "success"
-    })
-
-    setDataUser(data)
-
+    obtenerDatosGItHub(username)
 }
 
-const obtenerDatosGItHub = async (username) => {
-    const response = await fetch("https://api.github.com/users/" + username);
+const obtenerDatosGItHub = async (username="juanpm32") => {
+    const response = await fetch(`https://api.github.com/users/${username}`);
     const data = await response.json();
+    if(data.message === "Not Found"){
+        Swal.fire({
+            title:"Error",
+            text:"No existe el usuario",
+            icon:"error"
+        })
+      }
     setDataUser(data)
 }
 
-const setDataUser = (dato) => {
-    ghImage.src = dato.avatar_url;
-    ghName.innerHTML = dato.name;
-    ghBio.innerHTML = dato.bio;
-    ghLocation.innerHTML = dato.location;
-    ghSite.innerHTML = dato.site_admin;
-    ghURL.innerHTML = dato.url;
-    ghTwiter.innerHTML = dato.twitter_username;
+const setDataUser = (data) => {
+    obj.ghImage.src = data.avatar_url;
+    obj.ghName.innerHTML = data.name;
+    obj.ghName1.innerHTML = data.name;
+    obj.ghBio.innerHTML = data.bio;
+    obj.ghLocation.innerHTML = data.location;
+    obj.ghCompany.innerHTML = data.company;
+    obj.ghURL.innerHTML = data.url;
+    obj.ghTwiter.innerHTML = data.twitter_username;
+    obj.ghRepository.innerHTML = data.public_repos;
+    obj.ghFollowers.innerHTML = data.followers;
+    obj.ghFollowing.innerHTML = data.following;
 }
+
+obtenerDatosGItHub();
